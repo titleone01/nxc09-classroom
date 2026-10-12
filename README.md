@@ -46,3 +46,8 @@ NXC-09 主回路 9 A 参数以官方样本的 AC-3、380 V / 400 V 工况表述�
 CHINT、正泰商标及原厂素材的权利归其权利人，本网页并非正泰官方教材。原厂资源的权利不因公开仓库而改变，本仓库不授予额外的素材许可。Three.js、three-mesh-bvh、Meshoptimizer 的许可证分别保留在 `vendor/LICENSE`、`vendor/three-mesh-bvh.LICENSE` 和 `vendor/meshoptimizer.LICENSE`。
 
 原始 STEP、Blender 工程、完整 GLB、制作脚本和实测记录另保存在本地项目交付目录；参考图片与 CAD 工程不随网页仓库发布。
+## 工作动作和单文件离线版
+
+工作动作页使用现有原厂详细机构，演示得电吸合、主触头 / NO 闭合、NC 断开及失电复位。外壳在动作页暂时隐藏，位移 2 mm 和弹簧压缩明确为教学设置。切换部位、拆解或复位恢复保存的原装配姿态。
+
+`npm ci` 后运行 `npm run build`，同步构建在线页面与 `offline/NXC09_离线.html`。该 HTML 内嵌完整模型、脚本、解码器、样式和讲解，单独拷贝、改名、换位置后可在 Chrome / Edge 双击断网使用。

@@ -5,6 +5,7 @@ import { loadFactoryModel, loadMetrics } from './model-loader.js';
 import calibration from './calibration-data.js';
 import explosionLayout from './explosion-data.js';
 import { bindExplosion } from './explosion.js';
+import { bindOperation } from './operation.js';
 import { overview, topics, internalOverview, internalTopics } from './lesson.js';
 
 const $ = id => document.getElementById(id);
@@ -13,7 +14,7 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const state = { loaded: false, loading: false, topic: 'overview', mode: 'exterior', explosion: 0, explosionTarget: 0, isolate: true, labels: true, view: 'overview', meshInstances: 0, triangles: 0 };
 const viewNames = { overview: '整体观察', front: '正面', back: '背面', left: '左侧', right: '右侧', free: '自由观察', focus: '部件放大' };
 const directions = { overview: [.29,.17,1.9], front: [0,0,1], back: [0,0,-1], left: [-1,0,0], right: [1,0,0] };
-let renderer, controls, model, bounds, cameraMotion, explosionMotion, explosion, floor, assemblyAxis, dirty = true, raycastMeshes = [], activeRaycastMeshes = [], markerGroup;
+let renderer, controls, model, bounds, cameraMotion, explosionMotion, explosion, operation, floor, assemblyAxis, dirty = true, raycastMeshes = [], activeRaycastMeshes = [], markerGroup;
 const identification = [];
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, 1, .1, 3000);
@@ -25,6 +26,7 @@ const svgNS = 'http://www.w3.org/2000/svg';
 function text(id, value) { $(id).textContent = value; }
 function showTopic(id, moveCamera = true) {
   const internal = internalTopics.find(t => t.id === id);
+  if (state.mode === 'operation' && id !== 'overview') setMode(internal ? 'internal' : 'exterior', false);
   if (internal && state.mode !== 'internal') setMode('internal', false);
   const topic = internal || topics.find(t => t.id === id) || (state.mode === 'internal' ? internalOverview : overview);
   state.topic = topic.id || 'overview';
@@ -89,8 +91,23 @@ $('explosion-range').addEventListener('input', event => {
 document.querySelectorAll('[data-mode-tab]').forEach(button => button.addEventListener('click', () => setMode(button.dataset.modeTab)));
 document.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => showTopic(button.dataset.step)));
 document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => goView(button.dataset.view)));
+document.querySelectorAll('[data-operation]').forEach(button => button.addEventListener('click', () => {
+  if (button.dataset.operation === 'structure') { setMode('exterior'); return; }
+  if (state.mode !== 'operation') setMode('operation', false);
+  operation.command(button.dataset.operation === 'energize', reducedMotion);
+  updateOperationStatus(); dirty = true;
+}));
+
+function updateOperationStatus() {
+  if (!operation) return;
+  const s = operation.snapshot();
+  const messages = {released:'失电复位：主触头和 NO 断开，NC 闭合。',energized:'得电吸合：主触头和 NO 闭合，NC 断开。',energizing:'线圈建立磁场，衔铁带动触头架向静铁芯运动…',releasing:'线圈失电，复位弹簧推动衔铁与触头架返回…'};
+  text('operation-status',messages[s.phase]);
+  $('operation-panel').classList.toggle('energized',s.phase==='energized');
+}
 
 function setMode(mode, animate = true) {
+  operation?.stop();
   state.mode = mode;
   document.querySelectorAll('[data-mode]').forEach(b => { b.hidden = b.dataset.mode !== mode; });
   document.querySelectorAll('[data-mode-tab]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modeTab === mode)));
@@ -98,8 +115,24 @@ function setMode(mode, animate = true) {
   text('overview-button', mode === 'internal' ? '展开全貌 ↗' : '整机概览 ↗');
   $('explosion-note').hidden = mode !== 'internal';
   $('principle-guide').hidden = mode !== 'internal';
+  $('operation-panel').hidden = mode !== 'operation';
+  $('topic-navigation').hidden = mode === 'operation';
   showTopic('overview', false);
-  if (state.loaded) setExplosion(mode === 'internal' ? 1 : 0, animate);
+  if (state.loaded) {
+    setExplosion(mode === 'internal' ? 1 : 0, mode === 'operation' ? false : animate);
+    if (mode === 'operation') {
+      operation.start();updateOperationStatus();
+      text('lesson-tag','原厂几何 · 工作动作教学示意');text('lesson-title','看懂得电吸合与失电复位');
+      text('lesson-subtitle','线圈 → 衔铁 → 触头架 → 主触头 / 辅助触头');
+      text('lesson-summary','为看清工作机构，演示暂时隐藏外壳。线圈得电产生磁场，衔铁向静铁芯运动，带动触头架切换触头；失电后弹簧使机构返回。');
+      text('lesson-terminals','主回路 + 13–14 NO + 21–22 NC');
+      text('lesson-behavior','吸合时主触头和常开辅助触头闭合，常闭辅助触头断开；释放时状态相反。');
+      text('lesson-note','使用原厂机构几何演示功能关系。位移 2 mm 和弹簧压缩为教学设置，不代表实际行程、吸合时间或磁场计算。');
+      for(const label of identification)label.mesh.visible=false;
+      if(assemblyAxis)assemblyAxis.visible=false;
+      dirty=true;
+    }
+  }
 }
 function applyExplosion(progress) {
   state.explosion = progress;
@@ -116,6 +149,7 @@ function updatePartVisibility() {
   const id = state.mode === 'internal' && explosion.groups.has(state.topic) ? state.topic : null;
   $('focus-options').hidden = !id;
   const selected = explosion.focus(id, state.isolate);
+  if(state.mode==='operation')operation?.apply();
   for (const label of identification) label.mesh.visible = !id || !state.isolate || selected.has(label.owner);
   activeRaycastMeshes = raycastMeshes.filter(mesh => {
     for (let node = mesh; node; node = node.parent) if (!node.visible) return false;
@@ -313,6 +347,7 @@ function updateHotspots() {
 function frame(now) {
   requestAnimationFrame(frame);
   if (document.hidden) return;
+  if (operation?.tick(now)) { updateOperationStatus(); dirty = true; }
   if (explosionMotion) {
     const t = Math.min(1, (now - explosionMotion.started) / explosionMotion.duration);
     applyExplosion(THREE.MathUtils.lerp(explosionMotion.from, explosionMotion.to, t*t*(3-2*t)));
@@ -355,13 +390,14 @@ async function loadModel() {
       if (++built % 8 === 0) await new Promise(requestAnimationFrame);
     }
     explosion = bindExplosion(model);
+    operation = bindOperation(model, explosion);
     scene.add(model); bounds = new THREE.Box3().setFromObject(model);
     const exploded = explosion.bounds(null, 1);
     assemblyAxis = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,exploded.min.z-7),new THREE.Vector3(0,0,exploded.max.z+7)]),new THREE.LineDashedMaterial({color:'#95abba',dashSize:3,gapSize:2,transparent:true,opacity:.5}));
     assemblyAxis.computeLineDistances(); assemblyAxis.visible=false; scene.add(assemblyAxis);
     addIdentification(); state.loaded = true;
     goView('overview',true); updateMarkers();
-    document.querySelectorAll('[data-view],#reset-view,#explode-button,#explosion-range,[data-mode-tab],[data-step]').forEach(button => { button.disabled = false; });
+    document.querySelectorAll('[data-view],#reset-view,#explode-button,#explosion-range,[data-mode-tab],[data-step],[data-operation]').forEach(button => { button.disabled = false; });
     setMode(state.mode, false);
     $('loading').hidden = true; text('model-status','原厂模型 · 已载入'); $('model-status').classList.add('is-ready');
     dirty = true;
@@ -374,6 +410,6 @@ async function loadModel() {
 }
 $('retry-model').addEventListener('click',loadModel);
 document.addEventListener('visibilitychange', () => { dirty = true; });
-window.__CONTACTOR__ = Object.freeze({ snapshot: () => ({ ...state, camera: camera.position.toArray(), target: controls?.target.toArray(), visibleHotspots: [...anchors].filter(([,a]) => !a.hotspot.hidden).map(([id]) => id), modelBounds: bounds?.getSize(new THREE.Vector3()).toArray(), explosionParts: explosion?.snapshot(), identificationError: explosion ? Math.max(...identification.map(l => l.mesh.position.distanceTo(l.rest.clone().add(explosion.offset(l.owner))))) : null, highlightCount: markerGroup?.children.length, visibleHighlights: markerGroup?.children.filter(l => l.visible).length, load: {...loadMetrics}, renderedFrames: renderer?.info.render.frame }) });
+window.__CONTACTOR__ = Object.freeze({ snapshot: () => ({ ...state, operation:operation?.snapshot(), camera: camera.position.toArray(), target: controls?.target.toArray(), visibleHotspots: [...anchors].filter(([,a]) => !a.hotspot.hidden).map(([id]) => id), modelBounds: bounds?.getSize(new THREE.Vector3()).toArray(), explosionParts: explosion?.snapshot(), identificationError: explosion ? Math.max(...identification.map(l => l.mesh.position.distanceTo(l.rest.clone().add(explosion.offset(l.owner))))) : null, highlightCount: markerGroup?.children.length, visibleHighlights: markerGroup?.children.filter(l => l.visible).length, load: {...loadMetrics}, renderedFrames: renderer?.info.render.frame }) });
 showTopic('overview',false);
 loadModel();

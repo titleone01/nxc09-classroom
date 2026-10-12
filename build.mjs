@@ -25,3 +25,4 @@ const html = await readFile(path.join(root, 'index.html'), 'utf8');
 if (!/src="\.\/app(?:-[a-f0-9]+)?\.js"/.test(html)) throw new Error('HTML application entry missing');
 await writeFile(path.join(root, 'index.html'), html.replace(/src="\.\/app(?:-[a-f0-9]+)?\.js"/, `src="./${filename}"`));
 console.log(JSON.stringify({ bundle: filename, bytes: bytes.length }));
+await import('./build-offline.mjs');
