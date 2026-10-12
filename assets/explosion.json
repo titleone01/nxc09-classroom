@@ -11,14 +11,14 @@
     "return": {"parts": ["8ZTD-282-1031"], "anchor": "8ZTD-282-1031", "side": "left", "row": 0.43}
   },
   "rules": [
-    {"parts": ["8ZTD-024-819"], "offset": [0, 0, 90], "shell": true},
-    {"parts": ["8ZTD-315-1156", "8ZTD-315-1157"], "offset": [0, 0, 102], "shell": true},
-    {"parts": ["8ZTD-282-1031"], "offset": [0, 0, 18]},
-    {"parts": ["8ZTD-261-102"], "offset": [0, 0, -45], "shell": true},
-    {"ancestors": ["5ZTD-612-289"], "offset": [0, 0, 5]},
-    {"ancestors": ["5ZTD-612-287"], "offset": [0, 0, -26]},
-    {"ancestors": ["5ZTD-520-777"], "offset": [0, 0, -12]},
-    {"ancestors": ["5ZTD-022-401"], "offset": [0, 0, -45], "shell": true}
+    {"parts": ["8ZTD-024-819"], "offset": [0, 0, 60], "shell": true},
+    {"parts": ["8ZTD-315-1156", "8ZTD-315-1157"], "offset": [0, 0, 66], "shell": true},
+    {"parts": ["8ZTD-282-1031"], "offset": [0, 0, 10]},
+    {"parts": ["8ZTD-261-102"], "offset": [0, 0, -30], "shell": true},
+    {"ancestors": ["5ZTD-612-289"], "offset": [0, 0, 2]},
+    {"ancestors": ["5ZTD-612-287"], "offset": [0, 0, -18]},
+    {"ancestors": ["5ZTD-520-777"], "offset": [0, 0, -8]},
+    {"ancestors": ["5ZTD-022-401"], "offset": [0, 0, -30], "shell": true}
   ],
-  "fallback": {"offset": [0, 0, 35]}
+  "fallback": {"offset": [0, 0, 24]}
 }
