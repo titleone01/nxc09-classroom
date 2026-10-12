@@ -1,0 +1,23 @@
+.explosion-toolbar{display:flex;align-items:center;gap:15px;padding:17px 20px;background:#f7fafd;border-top:1px solid #e0e8ef}
+#explode-button{border:0;border-radius:8px;background:#2168ae;color:#fff;padding:10px 15px;font-size:12px;min-width:96px;white-space:nowrap}
+.explosion-toolbar label{font-size:11px;color:#6b8398;white-space:nowrap}
+#explosion-range{min-width:0;flex:1;width:100%;accent-color:#2168ae;cursor:pointer;height:24px;margin:0}
+#explosion-range:disabled{cursor:wait}
+#explosion-value{font-size:11px;color:#6b8398;min-width:33px;text-align:right;font-variant-numeric:tabular-nums}
+.explosion-note{margin:0;padding:0 20px 13px;background:#f7fafd;color:#8b9eaf;font-size:10px;line-height:1.8}
+#focus-options{display:flex;align-items:center;justify-content:space-between;padding:0 20px 14px;background:#f7fafd;color:#7c93a6;font-size:10px}
+#focus-options label{display:flex;align-items:center;gap:5px;cursor:pointer}#isolate-part{accent-color:#2168ae;margin:0}
+.lesson-tabs{display:flex;gap:4px;margin:16px 18px 0;padding:4px;background:#f0f5f9;border-radius:9px;grid-column:1/-1}
+.lesson-tabs button{flex:1;border:0;border-radius:7px;padding:8px 10px;background:transparent;color:#8198ac;font-size:11px}
+.lesson-tabs button[aria-pressed=true]{background:white;color:#2168ae;box-shadow:0 1px 5px #2445600d}
+.lesson-topline{padding-top:16px}
+.principle-guide{padding:16px 20px 20px;background:white;border-top:1px solid #e0e8ef}
+.principle-heading{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#52728d;font-weight:600;margin-bottom:12px}
+.principle-heading span{font-size:10px;font-weight:400;color:#9aadbd}
+.principle-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.principle-steps button{position:relative;border:1px solid #e0e9f0;border-radius:9px;background:#f7fafd;text-align:left;padding:10px 12px;color:#577691}
+.principle-steps button[aria-pressed=true]{background:#ebf4fc;border-color:#84afd7;color:#2168ae}
+.principle-steps span{font-size:9px;color:#8dabc3;display:block;margin-bottom:5px}
+.principle-steps strong{font-size:11px;font-weight:600;display:block}
+.principle-steps small{font-size:9px;color:#97aaba;display:block;line-height:1.7;margin-top:3px}
+@media(max-width:540px){.explosion-toolbar{gap:8px;padding:13px 10px}.explosion-toolbar label{font-size:9px}#explode-button{font-size:10px;padding:9px 10px;min-width:75px}#explosion-value{font-size:9px;min-width:27px}.explosion-note{padding:0 12px 12px;font-size:9px}.lesson-tabs{margin:13px 14px 0}.lesson-tabs button{font-size:11px;padding:8px}.principle-guide{padding:14px 12px}.principle-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.principle-steps button{padding:9px 11px}.principle-steps strong{font-size:11px}.principle-steps small{font-size:9px}}

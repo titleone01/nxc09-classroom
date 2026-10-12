@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="正泰 NXC-09 交流接触器三维互动教材：旋转观察原厂模型，拆开查看线圈、铁芯、触头和弹簧，理解吸合与复位。">
+  <meta name="theme-color" content="#edf3f8">
+  <title>NXC-09 交流接触器 · 三维互动教材</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./explosion.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <div><div class="eyebrow"><span class="brand-mark" aria-hidden="true">N</span> 电气元件 · 三维互动教材</div>
+      <h1>交流接触器<span>NXC-09</span></h1>
+      <p class="intro">认识端子，拆开机构，看懂吸合与复位。</p></div>
+      <div class="header-meta"><span class="factory-pill"><i></i> 正泰原厂几何模型</span><span class="spec-summary">三极主回路 <b>·</b> 1NO + 1NC</span></div>
+    </header>
+    <div class="classroom">
+      <section class="model-panel" aria-label="接触器三维观察区">
+        <div class="model-heading"><span class="section-label"><i></i> 三维观察</span><span id="model-status" role="status">正在准备模型</span></div>
+        <div id="viewer">
+          <div class="stage-watermark" aria-hidden="true">NXC<span>09</span></div>
+          <svg id="callout-lines" aria-hidden="true"></svg>
+          <div id="hotspots" aria-label="模型部位标注"></div>
+          <div id="loading" class="viewer-overlay" role="status"><div class="loading-card"><span class="spinner" aria-hidden="true"></span><strong>准备原厂三维模型</strong><p id="loading-text">正在载入模型…</p></div></div>
+          <div id="viewer-error" class="viewer-overlay" hidden><div class="error-card"><strong>三维模型暂时未能载入</strong><p id="error-detail"></p><button id="retry-model" type="button">重新载入</button><p class="error-tip">也可以先从右侧的部位说明了解端子用途。</p></div></div>
+          <div class="view-hint"><span aria-hidden="true">↔</span> 拖动旋转 <span class="hint-divider">/</span> 滚轮或双指缩放</div>
+          <span id="view-name" class="view-name">整体观察</span>
+        </div>
+        <div class="viewer-toolbar"><div class="view-buttons" aria-label="快捷视角"><button data-view="front" type="button" disabled>正面</button><button data-view="back" type="button" disabled>背面</button><button data-view="left" type="button" disabled>左侧</button><button data-view="right" type="button" disabled>右侧</button></div><div class="view-options"><label class="labels-toggle"><input id="toggle-labels" type="checkbox" checked>显示标注</label><button id="reset-view" class="reset-button" type="button" disabled><span aria-hidden="true">↺</span> 复位</button></div></div>
+        <div class="explosion-toolbar"><button id="explode-button" type="button" disabled>拆开观察</button><label for="explosion-range">拆开程度</label><input id="explosion-range" type="range" min="0" max="100" step="1" value="0" disabled><output id="explosion-value" for="explosion-range">0%</output></div>
+        <p id="explosion-note" class="explosion-note" hidden>沿壳体前后方向分层展开，螺丝随组件保留 · 教学间距不代表维修顺序或实际动作行程。</p>
+        <div id="focus-options" hidden><span>部件放大观察</span><label><input id="isolate-part" type="checkbox" checked>只看选中部件</label></div>
+        <div id="principle-guide" class="principle-guide" hidden><div class="principle-heading">它怎样工作<span>点击查看对应机构</span></div><div class="principle-steps" aria-label="工作原理观察顺序"><button data-step="winding" type="button" disabled><span>01</span><strong>线圈得电</strong><small>建立磁场</small></button><button data-step="armature" type="button" disabled><span>02</span><strong>衔铁吸合</strong><small>带动触头架</small></button><button data-step="contacts" type="button" disabled><span>03</span><strong>触头切换</strong><small>主触头 / NO 闭合</small></button><button data-step="return" type="button" disabled><span>04</span><strong>失电复位</strong><small>弹簧使机构返回</small></button></div></div>
+      </section>
+      <aside class="lesson-panel" aria-label="部位与功能说明">
+        <div class="lesson-tabs" aria-label="学习内容"><button data-mode-tab="exterior" type="button" aria-pressed="true" disabled>外观端子</button><button data-mode-tab="internal" type="button" aria-pressed="false" disabled>内部机构</button></div>
+        <div class="lesson-topline"><span>认识部位</span><button id="overview-button" type="button">整机概览 <span aria-hidden="true">↗</span></button></div>
+        <div class="lesson-detail"><div id="lesson-tag" class="lesson-tag">NXC-09 / 交流接触器</div><h2 id="lesson-title">先认识这只接触器</h2><p id="lesson-subtitle" class="lesson-subtitle">用小电流控制主回路的通断</p><p id="lesson-summary"></p><div class="terminal-strip" id="lesson-terminals"></div><div class="behavior-block"><span>它的作用</span><p id="lesson-behavior"></p></div><p id="lesson-note" class="lesson-note"></p><a id="lesson-source" class="source-link" href="https://www.chintglobal.com/global/en/products/low-voltage/iec/industrial-control/nxc.html" target="_blank" rel="noopener">正泰官方产品资料 <span aria-hidden="true">↗</span></a></div>
+        <div class="topic-navigation"><div class="topic-heading">选择一个部位<span>点击定位</span></div><div id="topic-list"></div></div>
+      </aside>
+    </div>
+    <footer class="page-footer"><p><strong>模型来源</strong> 正泰 NXC-06～16 原厂 STEP；合拢时恢复原装配，配色及教学识别文字参考照片补充。</p><div><a href="https://www.chintglobal.com/global/en/products/low-voltage/iec/industrial-control/nxc.html" target="_blank" rel="noopener">官方资料 ↗</a><a href="./embed-example.html">教材嵌入示例 ↗</a><a href="https://github.com/titleone01/nxc09-classroom" target="_blank" rel="noopener">源码 ↗</a></div><p class="rights">CHINT、正泰及原厂资源的权利归其权利人。本网页为教学用途的结构与功能展示。</p></footer>
+    <p id="announcer" class="visually-hidden" aria-live="polite"></p>
+  </main>
+  <noscript><p>本教材需要启用 JavaScript 才能显示三维模型。</p></noscript>
+  <script type="module" src="./app-0dc066d12af8.js"></script>
+</body>
+</html>

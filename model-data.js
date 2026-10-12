@@ -1,0 +1,1 @@
+export default {"compressed":"nxc09-fb143da5da5b.glb.gz","fallback":"nxc09-fb143da5da5b.glb","compressedBytes":5284253,"decodedBytes":7724780,"sha256":"fb143da5da5b176b28e7bea9d69c712b3ed3a8e670fbf8bf13e59453373605ec","gzipSha256":"2d98197b79684c9d354acd840d59be021625e7c0e28280834400643dfe87d85c"};
